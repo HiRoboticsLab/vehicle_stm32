@@ -11,7 +11,7 @@
 #include "config.h"
 #include "wheel.h"
 
-#define PI		3.14159265358979323846
+#define PI 3.14159265358979323846
 
 void adjust();
 void reportInfo();
@@ -49,14 +49,14 @@ Wheel wheel4(pin_wheel_4_in1, pin_wheel_4_in2, pin_wheel_4_code1,
              pin_wheel_4_code2, true);
 
 // mpu
-Quaternion q;
-uint8_t fifoBuffer[64];  // FIFO storage buffer
-VectorFloat gravity;     // [x, y, z]            gravity vector
-float ypr[3];            // [yaw, pitch, roll]
-MPU6050 mpu;
-VectorInt16 aa;
-VectorInt16 aaReal;      // [x, y, z]            gravity-free accel sensor measurements
-VectorInt16 aaWorld;
+// Quaternion q;
+// uint8_t fifoBuffer[64];  // FIFO storage buffer
+// VectorFloat gravity;     // [x, y, z]            gravity vector
+// float ypr[3];            // [yaw, pitch, roll]
+// MPU6050 mpu;
+// VectorInt16 aa;
+// VectorInt16 aaReal;      // [x, y, z]            gravity-free accel sensor
+// measurements VectorInt16 aaWorld;
 
 // 按键
 OneButton button(pin_btn, true);
@@ -97,28 +97,28 @@ void reportInfo() {
   // report["light"] = digitalRead(pin_light) ? "off" : "on";
   // report["turnLight"] = stateTurnLight;
 
-  mpu.dmpGetCurrentFIFOPacket(fifoBuffer);
-  mpu.dmpGetQuaternion(&q, fifoBuffer);
-  mpu.dmpGetGravity(&gravity, &q);
-  mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+  // mpu.dmpGetCurrentFIFOPacket(fifoBuffer);
+  // mpu.dmpGetQuaternion(&q, fifoBuffer);
+  // mpu.dmpGetGravity(&gravity, &q);
+  // mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
 
-  report["ypr"][0] = ypr[0] * 180 / PI;
+  report["ypr"][0] = 0;
   // 对应车辆坐标系
-  report["ypr"][1] = ypr[2] * 180 / PI;
-  report["ypr"][2] = ypr[1] * 180 / PI;
+  report["ypr"][1] = 0;
+  report["ypr"][2] = 0;
 
-  mpu.dmpGetAccel(&aa, fifoBuffer);
-  mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-  mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+  // mpu.dmpGetAccel(&aa, fifoBuffer);
+  // mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+  // mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
 
-  report["accel"][0] = aaWorld.x;
-  report["accel"][1] = aaWorld.y;
-  report["accel"][2] = aaWorld.z;
+  report["accel"][0] = 0;
+  report["accel"][1] = 0;
+  report["accel"][2] = 0;
 
-  report["quaternion"][0] = q.w;
-  report["quaternion"][1] = q.x;
-  report["quaternion"][2] = q.y;
-  report["quaternion"][3] = q.z;
+  report["quaternion"][0] = 0;
+  report["quaternion"][1] = 0;
+  report["quaternion"][2] = 0;
+  report["quaternion"][3] = 0;
 
   //
   report["wheel"][0] = wheel3.getCountByDir();
@@ -248,32 +248,32 @@ void setup() {
   // HAL_NVIC_SetPriority(USART3_IRQn, 3, 1);
 
   // mpu6050
-  Wire.setSDA(pin_mpu_sda);
-  Wire.setSCL(pin_mpu_scl);
-  Wire.begin();
+  // Wire.setSDA(pin_mpu_sda);
+  // Wire.setSCL(pin_mpu_scl);
+  // Wire.begin();
 
-  Wire.setClock(400000);
+  // Wire.setClock(400000);
 
-  bool connected = false;
+  // bool connected = false;
 
-  while (!connected) {
-    // mpu.reset();
-    // delay(1000);
-    mpu.initialize();
-    delay(2000);
+  // while (!connected) {
+  //   // mpu.reset();
+  //   // delay(1000);
+  //   mpu.initialize();
+  //   delay(2000);
 
-    connected = mpu.testConnection();
-    connected ? Serial1.println("[ok] imu") : Serial1.println("[error] imu");
-  }
+  //   connected = mpu.testConnection();
+  //   connected ? Serial1.println("[ok] imu") : Serial1.println("[error] imu");
+  // }
 
-  mpu.dmpInitialize();
+  // mpu.dmpInitialize();
 
-  mpu.CalibrateAccel(6);
-  mpu.CalibrateGyro(6);
-  mpu.PrintActiveOffsets();
-  // turn on the DMP, now that it's ready
-  Serial1.println("Enabling DMP...");
-  mpu.setDMPEnabled(true);
+  // mpu.CalibrateAccel(6);
+  // mpu.CalibrateGyro(6);
+  // mpu.PrintActiveOffsets();
+  // // turn on the DMP, now that it's ready
+  // Serial1.println("Enabling DMP...");
+  // mpu.setDMPEnabled(true);
 
   // 开启码盘中断
   attachAll();
@@ -331,14 +331,14 @@ void loop() {
         double w3s = left;
         double w4s = right;
 
-        if(left * (-1) == right){
-          if(doc["data"][0] < 0){
-            w4s = 0;
-          }
-          if(doc["data"][1] < 0){
-            w3s = 0;
-          }
-        }
+        // if(left * (-1) == right){
+        //   if(doc["data"][0] < 0){
+        //     w4s = 0;
+        //   }
+        //   if(doc["data"][1] < 0){
+        //     w3s = 0;
+        //   }
+        // }
 
         wheel1.checkSpeed(w1s);
         wheel2.checkSpeed(w2s);
@@ -421,42 +421,94 @@ void testLight() {
   digitalWrite(pin_light_D9, !digitalRead(pin_light_D9));
   digitalWrite(pin_light_D10, !digitalRead(pin_light_D10));
   // 读取imu，控制车轮
-  mpu.dmpGetCurrentFIFOPacket(fifoBuffer);
-  mpu.dmpGetQuaternion(&q, fifoBuffer);
-  mpu.dmpGetGravity(&gravity, &q);
-  mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-  // float是4Byte -> 1b + 8b + 23b
-  // double是8Byte -> 1b + 11b + 52b
-  double temp = ypr[0] * 180 / PI;
-  int lv = 0, rv = 0;
-  if (temp > 30) {
-    lv = -60;
-    rv = 60;
-  } else if (temp < -30) {
-    lv = 60;
-    rv = -60;
-  } else {
+  // mpu.dmpGetCurrentFIFOPacket(fifoBuffer);
+  // mpu.dmpGetQuaternion(&q, fifoBuffer);
+  // mpu.dmpGetGravity(&gravity, &q);
+  // mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+  // // float是4Byte -> 1b + 8b + 23b
+  // // double是8Byte -> 1b + 11b + 52b
+  // double temp = ypr[0] * 180 / PI;
+  // int lv = 0, rv = 0;
+  // if (temp > 30) {
+  //   lv = -60;
+  //   rv = 60;
+  // } else if (temp < -30) {
+  //   lv = 60;
+  //   rv = -60;
+  // } else {
+  //   lv = 0;
+  //   rv = 0;
+  // }
+  // // 控制车轮
+  // wheel1.checkSpeed(lv);
+  // wheel2.checkSpeed(rv);
+  // wheel3.checkSpeed(lv);
+  // wheel4.checkSpeed(rv);
+  // SetpointW1 = abs(lv);
+  // SetpointW2 = abs(rv);
+  // SetpointW3 = abs(lv);
+  // SetpointW4 = abs(rv);
+}
+
+int lv = 0, rv = 0;
+int mode = 0;
+int speed = 50;
+
+void testWheels() {
+  if (mode % 2) {
     lv = 0;
     rv = 0;
   }
-  // 控制车轮
+  switch (mode) {
+    case 0:
+      lv = speed;
+      rv = speed;
+      break;
+    case 2:
+      lv = -speed;
+      rv = -speed;
+      break;
+    case 4:
+      lv = -speed;
+      rv = speed;
+      break;
+    case 6:
+      lv = speed;
+      rv = -speed;
+      break;
+    default:
+      break;
+  }
+  mode++;
+  if (mode > 7) {
+    mode = 0;
+  }
+
+  Serial1.println(mode % 2);
+
   wheel1.checkSpeed(lv);
   wheel2.checkSpeed(rv);
   wheel3.checkSpeed(lv);
   wheel4.checkSpeed(rv);
-  SetpointW1 = abs(lv);
-  SetpointW2 = abs(rv);
-  SetpointW3 = abs(lv);
-  SetpointW4 = abs(rv);
+  if (lv != 0 && rv != 0) {
+    SetpointW1 = abs(lv);
+    SetpointW2 = abs(rv);
+    SetpointW3 = abs(lv);
+    SetpointW4 = abs(rv);
+  }
 }
 
 // 测试模式定时器
-Ticker timerTestMode(testLight, 1000);
+Ticker timerTestLight(testLight, 1000);
+Ticker timerTestWheels(testWheels, 2000);
 
 void testMode() {
-  timerTestMode.start();
+  Serial1.println("double click");
+  timerTestLight.start();
+  timerTestWheels.start();
   while (1) {
-    timerTestMode.update();
+    timerTestLight.update();
+    timerTestWheels.update();
 
     timerAdjust.update();
     PIDW1.Compute();
