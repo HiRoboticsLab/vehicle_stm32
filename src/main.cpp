@@ -40,13 +40,13 @@ Ticker timerBlink(blink, 100);
 
 // 轮子（PCB引脚顺序有调整，所以最后一个均为true）
 Wheel wheel1(pin_wheel_1_in1, pin_wheel_1_in2, pin_wheel_1_code1,
-             pin_wheel_1_code2, true);
+             pin_wheel_1_code2, false);
 Wheel wheel2(pin_wheel_2_in1, pin_wheel_2_in2, pin_wheel_2_code1,
-             pin_wheel_2_code2, true);
+             pin_wheel_2_code2, false);
 Wheel wheel3(pin_wheel_3_in1, pin_wheel_3_in2, pin_wheel_3_code1,
              pin_wheel_3_code2, true);
 Wheel wheel4(pin_wheel_4_in1, pin_wheel_4_in2, pin_wheel_4_code1,
-             pin_wheel_4_code2, true);
+             pin_wheel_4_code2, false);
 
 // mpu
 // Quaternion q;
@@ -354,16 +354,16 @@ void loop() {
         wheel3.checkSpeed(w3s);
         wheel4.checkSpeed(w4s);
 
-        // SetpointW1 = abs(w1s);
-        // SetpointW2 = abs(w2s);
-        // SetpointW3 = abs(w3s);
-        // SetpointW4 = abs(w4s);
+        SetpointW1 = abs(w1s);
+        SetpointW2 = abs(w2s);
+        SetpointW3 = abs(w3s);
+        SetpointW4 = abs(w4s);
 
         // 最大速度限制保护驱动芯片
-        abs(w1s) > 250 ? SetpointW1 = 250 : SetpointW1 = abs(w1s);
-        abs(w2s) > 250 ? SetpointW2 = 250 : SetpointW2 = abs(w2s);
-        abs(w3s) > 250 ? SetpointW3 = 250 : SetpointW3 = abs(w3s);
-        abs(w4s) > 250 ? SetpointW4 = 250 : SetpointW4 = abs(w4s);
+        // abs(w1s) > 250 ? SetpointW1 = 250 : SetpointW1 = abs(w1s);
+        // abs(w2s) > 250 ? SetpointW2 = 250 : SetpointW2 = abs(w2s);
+        // abs(w3s) > 250 ? SetpointW3 = 250 : SetpointW3 = abs(w3s);
+        // abs(w4s) > 250 ? SetpointW4 = 250 : SetpointW4 = abs(w4s);
       }
 
       if (doc["to"] == "light") {

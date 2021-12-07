@@ -27,10 +27,10 @@ void Wheel::setSpeed(int pwm) {
     disable();
     return;
   }
-  // 最大PWM限制，保护驱动芯片
-  if (pwm > 200) {
-    pwm = 200;
-  }
+  // // 最大PWM限制，保护驱动芯片
+  // if (pwm > 200) {
+  //   pwm = 200;
+  // }
   if (dir_now) {
     analogWrite(pin_in1, pwm);
     analogWrite(pin_in2, 0);
