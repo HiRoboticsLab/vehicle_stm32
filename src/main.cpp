@@ -63,6 +63,9 @@ OneButton button(pin_btn, true);
 
 // 硬件测试模式
 void testMode();
+// 向上位机请求重启蓝牙
+void resetBLE();
+bool FLAG_BLE_RESET = false;
 
 // 轮子外部中断回调函数
 void callbackWheel1() { wheel1.count++; }
@@ -94,37 +97,42 @@ void detachAll() {
 void reportInfo() {
   DynamicJsonDocument report(512);
 
-  // report["light"] = digitalRead(pin_light) ? "off" : "on";
-  // report["turnLight"] = stateTurnLight;
+  if (FLAG_BLE_RESET) {
+    report["ble"] = "restart";
+    FLAG_BLE_RESET = false;
+  } else {
+    // report["light"] = digitalRead(pin_light) ? "off" : "on";
+    // report["turnLight"] = stateTurnLight;
 
-  // mpu.dmpGetCurrentFIFOPacket(fifoBuffer);
-  // mpu.dmpGetQuaternion(&q, fifoBuffer);
-  // mpu.dmpGetGravity(&gravity, &q);
-  // mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+    // mpu.dmpGetCurrentFIFOPacket(fifoBuffer);
+    // mpu.dmpGetQuaternion(&q, fifoBuffer);
+    // mpu.dmpGetGravity(&gravity, &q);
+    // mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
 
-  report["ypr"][0] = 0;
-  // 对应车辆坐标系
-  report["ypr"][1] = 0;
-  report["ypr"][2] = 0;
+    report["ypr"][0] = 0;
+    // 对应车辆坐标系
+    report["ypr"][1] = 0;
+    report["ypr"][2] = 0;
 
-  // mpu.dmpGetAccel(&aa, fifoBuffer);
-  // mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-  // mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+    // mpu.dmpGetAccel(&aa, fifoBuffer);
+    // mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+    // mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
 
-  report["accel"][0] = 0;
-  report["accel"][1] = 0;
-  report["accel"][2] = 0;
+    report["accel"][0] = 0;
+    report["accel"][1] = 0;
+    report["accel"][2] = 0;
 
-  report["quaternion"][0] = 0;
-  report["quaternion"][1] = 0;
-  report["quaternion"][2] = 0;
-  report["quaternion"][3] = 0;
+    report["quaternion"][0] = 0;
+    report["quaternion"][1] = 0;
+    report["quaternion"][2] = 0;
+    report["quaternion"][3] = 0;
 
-  //
-  report["wheel"][0] = wheel3.getCountByDir();
-  report["wheel"][1] = wheel4.getCountByDir();
-  report["wheel"][2] = SetpointW4;
-  report["wheel"][3] = SetpointW4;
+    //
+    report["wheel"][0] = wheel3.getCountByDir();
+    report["wheel"][1] = wheel4.getCountByDir();
+    report["wheel"][2] = SetpointW4;
+    report["wheel"][3] = SetpointW4;
+  }
 
   adjust();
 
@@ -294,6 +302,7 @@ void setup() {
 
   // 设备测试按钮
   button.attachDoubleClick(testMode);
+  button.attachLongPressStart(resetBLE);
 }
 
 String cmd = "";
@@ -404,6 +413,8 @@ void loop() {
     }
   }
 }
+
+void resetBLE() { FLAG_BLE_RESET = true; }
 
 /**
  * ==============
