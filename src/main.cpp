@@ -40,13 +40,13 @@ Ticker timerBlink(blink, 100);
 
 // 轮子（PCB引脚顺序有调整，所以最后一个均为true）
 Wheel wheel1(pin_wheel_1_in1, pin_wheel_1_in2, pin_wheel_1_code1,
-             pin_wheel_1_code2, false);
+             pin_wheel_1_code2, true);
 Wheel wheel2(pin_wheel_2_in1, pin_wheel_2_in2, pin_wheel_2_code1,
-             pin_wheel_2_code2, false);
+             pin_wheel_2_code2, true);
 Wheel wheel3(pin_wheel_3_in1, pin_wheel_3_in2, pin_wheel_3_code1,
-             pin_wheel_3_code2, true);
+             pin_wheel_3_code2, false);
 Wheel wheel4(pin_wheel_4_in1, pin_wheel_4_in2, pin_wheel_4_code1,
-             pin_wheel_4_code2, false);
+             pin_wheel_4_code2, true);
 
 // mpu
 // Quaternion q;
@@ -109,23 +109,23 @@ void reportInfo() {
     // mpu.dmpGetGravity(&gravity, &q);
     // mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
 
-    report["ypr"][0] = 0;
-    // 对应车辆坐标系
-    report["ypr"][1] = 0;
-    report["ypr"][2] = 0;
+    // report["ypr"][0] = 0;
+    // // 对应车辆坐标系
+    // report["ypr"][1] = 0;
+    // report["ypr"][2] = 0;
 
-    // mpu.dmpGetAccel(&aa, fifoBuffer);
-    // mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-    // mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+    // // mpu.dmpGetAccel(&aa, fifoBuffer);
+    // // mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+    // // mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
 
-    report["accel"][0] = 0;
-    report["accel"][1] = 0;
-    report["accel"][2] = 0;
+    // report["accel"][0] = 0;
+    // report["accel"][1] = 0;
+    // report["accel"][2] = 0;
 
-    report["quaternion"][0] = 0;
-    report["quaternion"][1] = 0;
-    report["quaternion"][2] = 0;
-    report["quaternion"][3] = 0;
+    // report["quaternion"][0] = 0;
+    // report["quaternion"][1] = 0;
+    // report["quaternion"][2] = 0;
+    // report["quaternion"][3] = 0;
 
     //
     report["wheel"][0] = wheel3.getCountByDir();
